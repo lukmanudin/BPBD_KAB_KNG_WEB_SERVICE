@@ -48,8 +48,8 @@ class Apps extends CI_Controller {
 			$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/";
 			$cfg["btn_icon"] = "glyphicon glyphicon-arrow-left";
 			$cfg["btn_text"] = "Kembali";
+			$cfg['ref_bencana'] = $this->mod_infobencana->ref_bencana();
 			if($this->uri->segment(3) == $this->URL_INPUT_FORM){
-				$cfg['ref_bencana'] = $this->mod_infobencana->ref_bencana();
 				$this->load->view('apps/body_info_bencana_input',$cfg);
 			}else
 			if($this->uri->segment(3) == $this->URL_EDIT_FORM){

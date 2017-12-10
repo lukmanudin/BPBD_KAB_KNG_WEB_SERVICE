@@ -11,6 +11,86 @@ class Api extends CI_Controller {
 		header('Content-type: json');
 	}
 
+	function verifikasi(){
+        if($this->input->post()!=null){
+            $data = array(
+            "username" => $this->input->post('username'),
+            "password" => md5($this->input->post('password')));
+            $resultcek = $this->get_user_by_username($data);
+            if($resultcek==null){
+                $return = array(
+                    "status_cek" => "NOT FOUND",
+                    "message" => "Username tidak terdaftar",
+                    "message_severity" => "danger",
+                    "data_user" => null
+                );
+            }else{
+                $return = $this->matching($data,$resultcek);
+            } 
+        }else{
+            $return = array(
+                "status_cek" => "NO DATA POSTED",
+                "message" => "Tidak ada data dikirim ke server",
+                "message_severity"  => "danger",
+                "data_user" => null
+            );
+        }
+		echo json_encode(array("response"=>$return));
+    }
+    
+    function get_user_by_username($data){
+        return $this->mod_user->get_user_by_username($data);
+    }
+    
+    function matching($data,$resultcek){
+        if($data["username"] == $resultcek[0]->username && $data["password"] == $resultcek[0]->password){
+            if($resultcek[0]->status == 2){
+                $status_cek = "NOT MATCH";
+                $message = "User Anda diblokir! Anda tidak dapat login";
+                $severity = "danger";
+                //$this->buat_session($resultcek);
+            }else
+            if($resultcek[0]->status == 1){
+                $status_cek = "MATCH";
+                $message = "Username dan password sesuai";
+                $severity = "success";
+                $this->buat_session($resultcek);
+            }
+        }else{
+            $status_cek = "NOT MATCH";
+            $message = "Username dan password tidak sesuai";
+            $severity = "warning";
+        }
+        $return = array(
+            "status_cek" => $status_cek,
+            "message" => $message,
+            "message_severity" => $severity,
+            "data_user" => $resultcek
+        );
+        return $return;
+    }
+
+    function buat_session($resultcek){
+        $waktu = date("Y-m-d H:i:s");
+        $this->update_login_timestamp($resultcek[0]->id,array("last_login" => $waktu));
+        $data_session = array(
+            "session_appssystem_code"=>"SeCuRe".date("YmdHis")."#".date("YHmids"),
+            "session_appssystem_id"=>$resultcek[0]->id,
+            "session_appssystem_username"=>$resultcek[0]->username,
+            "session_appssystem_nama_lengkap"=>$resultcek[0]->nama,
+            "session_appssystem_tipe_user"=>$resultcek[0]->tipe,
+            "session_appssystem_api_key"=>$resultcek[0]->API_KEY,
+            "session_appssystem_secure_key"=>$resultcek[0]->secure_key,
+            "session_appssystem_last_login"=>$waktu
+        );
+        $this->session->set_userdata($data_session);
+    }
+    
+    function update_login_timestamp($id,$data){
+        $this->mod_user->update_login_timestamp($id,$data);
+    }
+
+	// ----- PRINGATAN DINI -----
 	function peringatan_dini(){
 		$response = $this->mod_peringatandini->peringatan_dini();
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
