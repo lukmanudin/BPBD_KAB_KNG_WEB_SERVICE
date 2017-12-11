@@ -5,12 +5,14 @@ class Api extends CI_Controller {
 
 	function __construct(){
 		parent::__construct();
+		$this->load->model('mod_laporanmasyarakat');
 		$this->load->model('mod_peringatandini');
-		$this->load->model('mod_test');
 		$this->load->model('mod_infobencana');
+		$this->load->model('mod_user');
 		header('Content-type: json');
 	}
 
+	//--- LOGIN - - -
 	function verifikasi(){
         if($this->input->post()!=null){
             $data = array(
@@ -19,9 +21,9 @@ class Api extends CI_Controller {
             $resultcek = $this->get_user_by_username($data);
             if($resultcek==null){
                 $return = array(
-                    "status_cek" => "NOT FOUND",
+                    "code" => "NOT FOUND",
                     "message" => "Username tidak terdaftar",
-                    "message_severity" => "danger",
+                    "severity" => "danger",
                     "data_user" => null
                 );
             }else{
@@ -29,9 +31,9 @@ class Api extends CI_Controller {
             } 
         }else{
             $return = array(
-                "status_cek" => "NO DATA POSTED",
+                "code" => "NO DATA POSTED",
                 "message" => "Tidak ada data dikirim ke server",
-                "message_severity"  => "danger",
+                "severity"  => "danger",
                 "data_user" => null
             );
         }
@@ -45,26 +47,26 @@ class Api extends CI_Controller {
     function matching($data,$resultcek){
         if($data["username"] == $resultcek[0]->username && $data["password"] == $resultcek[0]->password){
             if($resultcek[0]->status == 2){
-                $status_cek = "NOT MATCH";
+                $code = "NOT MATCH";
                 $message = "User Anda diblokir! Anda tidak dapat login";
                 $severity = "danger";
                 //$this->buat_session($resultcek);
             }else
             if($resultcek[0]->status == 1){
-                $status_cek = "MATCH";
+                $code = "MATCH";
                 $message = "Username dan password sesuai";
                 $severity = "success";
                 $this->buat_session($resultcek);
             }
         }else{
-            $status_cek = "NOT MATCH";
+            $code = "NOT MATCH";
             $message = "Username dan password tidak sesuai";
             $severity = "warning";
         }
         $return = array(
-            "status_cek" => $status_cek,
+            "code" => $code,
             "message" => $message,
-            "message_severity" => $severity,
+            "severity" => $severity,
             "data_user" => $resultcek
         );
         return $return;
@@ -76,11 +78,10 @@ class Api extends CI_Controller {
         $data_session = array(
             "session_appssystem_code"=>"SeCuRe".date("YmdHis")."#".date("YHmids"),
             "session_appssystem_id"=>$resultcek[0]->id,
+            "session_appssystem_tipe"=>$resultcek[0]->tipe,
             "session_appssystem_username"=>$resultcek[0]->username,
-            "session_appssystem_nama_lengkap"=>$resultcek[0]->nama,
-            "session_appssystem_tipe_user"=>$resultcek[0]->tipe,
-            "session_appssystem_api_key"=>$resultcek[0]->API_KEY,
-            "session_appssystem_secure_key"=>$resultcek[0]->secure_key,
+            "session_appssystem_nama"=>$resultcek[0]->nama,
+            "session_appssystem_email"=>$resultcek[0]->email,
             "session_appssystem_last_login"=>$waktu
         );
         $this->session->set_userdata($data_session);
@@ -88,6 +89,63 @@ class Api extends CI_Controller {
     
     function update_login_timestamp($id,$data){
         $this->mod_user->update_login_timestamp($id,$data);
+	}
+	
+	//----- DAFTAR PENGGUNA - - -
+	function verifikasi_daftar(){
+        if($this->input->post()!=null){
+            $tipe = $this->input->post('tipe');
+            $username = $this->input->post('username');
+            $password = $this->input->post('password');
+            $nama = $this->input->post('nama');
+            $email = $this->input->post('email');
+            $alamat = $this->input->post('alamat');
+            $status = "0";
+            $data = array(
+				"tipe" => $tipe,
+                "username" => $username,
+                "password" => $password,
+                "nama" => $nama,
+                "alamat" => $alamat);
+            $resultcek = $this->mod_user->verifikasi_daftar($data);
+            if($resultcek==null){    
+                $data = array(
+					"tipe" => $tipe,
+                    "username" => $username,
+                    "password" => md5($password),
+					"nama" => $nama,
+					"email" => $email,
+					"alamat" => $alamat,
+					"status" => $status,
+                    "register_datetime" => date("Y-m-d H:i:s"),
+                    "last_login" => date("Y-m-d H:i:s"));
+                $resultcek = $this->mod_user->daftar($data);
+                if($resultcek > 0){
+                    $return = array(
+                        "code" => "SUCCESS",
+                        "message" => "Pendaftaran berhasil",
+                        "severity" => "success");    
+                }else{
+                    $return = array(
+                        "code" => "FAILED",
+                        "message" => "Pendaftaran gagal. Silahkan coba lagi.",
+                        "severity" => "warning");  
+                }
+            }else{
+                 $return = array(
+                    "code" => "FOUND",
+                    "message" => "Userneme sudah digunakan, cari username lainnya!",
+                    "severity" => "danger"
+                );
+            } 
+        }else{
+            $return = array(
+                "code" => "NO DATA POSTED",
+                "message" => "Tidak ada data dikirim ke server!",
+                "severity" => "danger"
+            );
+        }
+        echo json_encode(array("response"=>$return),JSON_PRETTY_PRINT);
     }
 
 	// ----- PRINGATAN DINI -----
@@ -462,5 +520,98 @@ class Api extends CI_Controller {
 		}
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
-	
+
+	//--- LAPORAN MASYARAKAT - - -
+	function laporan_masyarakat(){
+		$response = $this->mod_laporanmasyarakat->laporan_masyarakat();
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function laporan_masyarakat_input(){
+		if($this->input->post()!=null){
+			if (empty($_FILES['lampiran']['name'])==true) {
+				$nama_lampiran = "default.png";
+			}else{
+				$config['upload_path'] = './uploads/';
+				$config['allowed_types'] = 'gif|jpg|png|jpeg';
+				$config['max_size']	= '2048';
+				$config['overwrite'] = 'true';
+				$config['encrypt_name'] = 'true';  
+				$config['remove_spaces'] = 'true';  
+				$config['file_name'] = date("YmdHis");  
+				$this->load->library('upload', $config);
+				if(!$this->upload->do_upload('lampiran')){ 
+					echo $this->upload->display_errors();
+				}else{ 
+					$detail = $this->upload->data();
+					$nama_lampiran = $detail["orig_name"];
+				}
+			}
+			
+			$data_laporan_masyarakat = array(
+				"pengirim"=> $this->input->post('pengirim'),
+				"tanggal_kejadian"=> $this->input->post('tanggal_kejadian')." 00:00:00",
+				"judul"=> $this->input->post('judul'),
+				"kategori" => $this->input->post('kategori'),
+				"kampung" => $this->input->post('kampung'),
+				"kelurahan" => $this->input->post('kelurahan'),
+				"kecamatan" => $this->input->post('kecamatan'),
+				"kabupaten" => $this->input->post('kabupaten'),
+				"kronologis" => $this->input->post('kronologis'),
+				"lampiran"=> $nama_lampiran,
+				"status" => $this->input->post('status'),
+				"tanggal_buat" => date("Y-m-d H:i:s")
+			);
+			$result = $this->mod_laporanmasyarakat->laporan_masyarakat_input($data_laporan_masyarakat);
+			// echo json_encode($data_laporan_masyarakat);die();
+			if($result == 1){
+				$response = array(
+					"code" => "SUCCESS",
+					"message" => "Simpan data berhasil",
+					"severity" => "success"
+				);
+			}else{
+				$response = array(
+					"code" => "ERROR",
+					"message" => "Simpan data gagal",
+					"severity" => "warning"
+				);
+			}
+		}else{
+			$response = array(
+				"code" => "ERROR",
+				"message" => "Tidak ada data dikirim ke server",
+				"severity" => "danger"
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function laporan_masyarakat_delete(){
+		if($this->uri->segment(3) != null){
+			$result = $this->mod_laporanmasyarakat->laporan_masyarakat_delete($this->uri->segment(3));
+			if($result > 0){
+				if($result == 1){
+					$response = array(
+						"code" => "SUCCESS",
+						"message" => "hapus data berhasil",
+						"severity" => "success"
+					);
+				}else{
+					$response = array(
+						"code" => "ERROR",
+						"message" => "hapus data gagal",
+						"severity" => "warning"
+					);
+				}
+			}
+		}else{
+			$response = array(
+				"code" => "ERROR",
+				"message" => "Tidak parameter delete data",
+				"severity" => "danger"
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
 }

@@ -10,9 +10,11 @@
           </div>
           <form id="my_form" role="form" method="post" enctype="multipart/form-data">
             <div class="row">
-              <div class="col-lg-4">
+              <input type="hidden" id="pengirim" name="pengirim" value="<?php echo $this->session->userdata("session_appssystem_id"); ?>">
+              <input type="hidden" id="status" name="status" value="Waiting Response">
+               <div class="col-lg-4">
                 <div class="form-group">
-                  <label>Judul info bencana</label>
+                  <label>Judul Laporan</label>
                   <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini">
                 </div>
               </div>
@@ -62,44 +64,10 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-12">
                 <div class="form-group">
-                  <label>Dampak</label>
-                  <textarea class="form-control" id="dampak" name="dampak" placeholder="Dampak yang ditimbulkan"></textarea>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Kerugian Material</label>
-                  <textarea class="form-control" id="kerugian_material" name="kerugian_material" placeholder="Kerugian material"></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Korban Jiwa</label>
-                  <textarea class="form-control" id="korban_jiwa" name="korban_jiwa" placeholder="Korban jiwa"></textarea>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Kronologis peristiwa</label>
+                  <label>Kronologis peristiwa dan informasi terkini</label>
                   <textarea class="form-control" id="kronologis" name="kronologis" placeholder="Kronologis peristiwa"></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Upaya penanganan</label>
-                  <textarea class="form-control" id="penanganan" name="penanganan" placeholder="Upaya penanganan"></textarea>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Kebutuhan / Darurat</label>
-                  <textarea class="form-control" id="kebutuhan_darurat" name="kebutuhan_darurat" placeholder="Kebutuhan / Darurat"></textarea>
                 </div>
               </div>
             </div>
@@ -107,22 +75,6 @@
               <label>Lampiran</label>
               <input type="file" class="form-control" id="lampiran" name="lampiran" placeholder="Lampiran">
             </div>
-            <div class="form-group">
-              <label>Save as</label>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="status" value="Draft" checked>
-                    Simpan sebagai draft
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                  <input type="radio" name="status" value="Publish">
-                    Simpan dan publikasikan
-                </label>
-                  </label>
-                </div>
-              </div>
             <span class="pull-right">
               <button type="submit" id="btn_simpan" value="simpan" class="btn btn-success">Simpan</button>
             </span>
@@ -138,12 +90,12 @@
     </script> -->
     <script>
       $("form#my_form").submit(function(e) {
-        var konfirmasi = confirm("Apakah Anda yakin akan menyimpan peringatan dini?");
+        var konfirmasi = confirm("Apakah Anda yakin akan kirim laporan?");
         if(konfirmasi){
           e.preventDefault();    
           var formData = new FormData(this);
           $.ajax({
-              url: "<?php echo site_url(); ?>/api/info_bencana_input/",
+              url: "<?php echo site_url(); ?>/api/laporan_masyarakat_input/",
               type: 'POST',
               data: formData,
               success: function(response) {
@@ -157,7 +109,7 @@
                   }
               },
               error: function(response){
-                alert("Simpan data peringatan dini gagal.");
+                alert("Kirim laporan gagal.");
               },
               cache: false,
               contentType: false,
