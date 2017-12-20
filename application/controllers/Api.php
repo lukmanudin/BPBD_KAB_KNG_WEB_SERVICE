@@ -52,6 +52,11 @@ class Api extends CI_Controller {
                 $severity = "danger";
                 //$this->buat_session($resultcek);
             }else
+            if($resultcek[0]->status == 0){
+                $code = "NOT MATCH";
+                $message = "Username Anda belum aktif, silahkan lakukan aktivasi.";
+                $severity = "warning";
+			}else
             if($resultcek[0]->status == 1){
                 $code = "MATCH";
                 $message = "Username dan password sesuai";
@@ -100,13 +105,14 @@ class Api extends CI_Controller {
             $nama = $this->input->post('nama');
             $email = $this->input->post('email');
             $alamat = $this->input->post('alamat');
-            $status = "0";
+            $status = $this->input->post('status');;
             $data = array(
 				"tipe" => $tipe,
                 "username" => $username,
                 "password" => $password,
                 "nama" => $nama,
-                "alamat" => $alamat);
+				"alamat" => $alamat,
+				"email" => $email);
             $resultcek = $this->mod_user->verifikasi_daftar($data);
             if($resultcek==null){    
                 $data = array(
@@ -123,7 +129,7 @@ class Api extends CI_Controller {
                 if($resultcek > 0){
                     $return = array(
                         "code" => "SUCCESS",
-                        "message" => "Pendaftaran berhasil",
+                        "message" => "Pendaftaran berhasil,\nperiksa inbox atau SPAM email Anda untuk verifikasi pendaftaran",
                         "severity" => "success");    
                 }else{
                     $return = array(
@@ -134,7 +140,7 @@ class Api extends CI_Controller {
             }else{
                  $return = array(
                     "code" => "FOUND",
-                    "message" => "Userneme sudah digunakan, cari username lainnya!",
+                    "message" => "Userneme atau email sudah digunakan, gunakan yang lainnya!",
                     "severity" => "danger"
                 );
             } 
@@ -149,6 +155,12 @@ class Api extends CI_Controller {
     }
 
 	// ----- PRINGATAN DINI -----
+
+	function peringatan_dini_published(){
+		$response = $this->mod_peringatandini->peringatan_dini_published();
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	} 
+
 	function peringatan_dini(){
 		$response = $this->mod_peringatandini->peringatan_dini();
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
@@ -320,6 +332,11 @@ class Api extends CI_Controller {
 
 	//-----INFO BENCANA----------
 
+	function info_bencana_published(){
+		$response = $this->mod_infobencana->info_bencana_published();
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	} 
+
 	function info_bencana(){
 		$response = $this->mod_infobencana->info_bencana();
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
@@ -354,6 +371,7 @@ class Api extends CI_Controller {
 			}
 			$data_info_bencana = array(
 				"judul"=> $this->input->post('judul'),
+				"tanggal_kejadian" => $this->input->post('tanggal_kejadian'),
 				"kategori" => $this->input->post('kategori'),
 				"kampung" => $this->input->post('kampung'),
 				"kelurahan" => $this->input->post('kelurahan'),
@@ -433,6 +451,7 @@ class Api extends CI_Controller {
 			if($nama_lampiran == null){
 				$data_info_bencana = array(
 					"judul"=> $this->input->post('judul'),
+					"tanggal_kejadian" => $this->input->post('tanggal_kejadian'),
 					"kategori" => $this->input->post('kategori'),
 					"kampung" => $this->input->post('kampung'),
 					"kelurahan" => $this->input->post('kelurahan'),
@@ -451,6 +470,7 @@ class Api extends CI_Controller {
 			}else{
 				$data_info_bencana = array(
 					"judul"=> $this->input->post('judul'),
+					"tanggal_kejadian" => $this->input->post('tanggal_kejadian'),
 					"kategori" => $this->input->post('kategori'),
 					"kampung" => $this->input->post('kampung'),
 					"kelurahan" => $this->input->post('kelurahan'),
@@ -534,7 +554,7 @@ class Api extends CI_Controller {
 			}else{
 				$config['upload_path'] = './uploads/';
 				$config['allowed_types'] = 'gif|jpg|png|jpeg';
-				$config['max_size']	= '2048';
+				$config['max_size']	= '10240';
 				$config['overwrite'] = 'true';
 				$config['encrypt_name'] = 'true';  
 				$config['remove_spaces'] = 'true';  
@@ -550,7 +570,7 @@ class Api extends CI_Controller {
 			
 			$data_laporan_masyarakat = array(
 				"pengirim"=> $this->input->post('pengirim'),
-				"tanggal_kejadian"=> $this->input->post('tanggal_kejadian')." 00:00:00",
+				"tanggal_kejadian"=> $this->input->post('tanggal_kejadian'),
 				"judul"=> $this->input->post('judul'),
 				"kategori" => $this->input->post('kategori'),
 				"kampung" => $this->input->post('kampung'),
@@ -614,4 +634,52 @@ class Api extends CI_Controller {
 		}
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
+
+	function laporan_masyarakat_by_pengirim(){
+		if($this->uri->segment(3) != null){
+			$response = $this->mod_laporanmasyarakat->laporan_masyarakat_by_pengirim($this->uri->segment(3));
+		}else{
+			$response = array();
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	//---- LANDING PAGE WEB
+	function landing_page_web(){
+		$response = array(
+			"last_peringatan_dini" => $this->mod_peringatandini->last_peringatan_dini(),
+			"last_info_bencana" => $this->mod_infobencana->last_info_bencana(),
+			"last_laporan_bencana" => $this->mod_laporanmasyarakat->last_laporan_masyarakat()
+		);
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	public function laurensius_mailer(){
+        $config['protocol'] = 'mail';
+        $config['charset'] = 'iso-8859-1';
+        $config['smtp_host'] = 'ssl://8001.dapurhosting.com';
+        $config['smtp_user'] = 'saya@laurensius-dede-suhardiman.com';
+        $config['smtp_pass'] = 'Laurens23!';
+        $config['smtp_port'] = '465';
+        $config['smtp_timeout'] = '30';
+        $config['mailtype'] = 'html';
+        $config['wordwrap'] = TRUE;
+
+        $this->load->library('email',$config);
+
+        $this->email->from('saya@laurensius-dede-suhardiman.com', 'no-reply');
+        $this->email->to('burglar.tea@gmail.com');
+        $this->email->cc('didinlukmanudin@gmail..com'); 
+        $this->email->subject('Ngetest email buat daftar user');
+        $this->email->message('Auto email bos');
+
+// //        str_ireplace($config, $replace, $subject)
+        
+//         $this->email->attach(APPPATH . '../menu_makanan/menu_20140929100633.jpg');
+//         $this->email->attach(APPPATH . '../menu_makanan/menu_20140929091008.png');
+//         //$this->email->attach('menu_20140929100633.jpg');	
+        $this->email->send();
+        echo $this->email->print_debugger();
+    }
+
 }

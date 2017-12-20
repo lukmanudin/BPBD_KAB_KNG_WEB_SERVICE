@@ -9,6 +9,7 @@ class Apps extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('mod_infobencana');
+		$this->load->model('mod_peringatandini');
 	}
 
 	public function index(){
@@ -161,4 +162,26 @@ class Apps extends CI_Controller {
         }
 		header('location:'. site_url().'/apps/login/');
 	}
+
+	//
+	function landing_page(){
+		$this->load->view('landing_page/landing_page');
+	}
+	//
+
+
+	function mobile_peringatan_dini_detail(){
+		if($this->uri->segment(3) != null){
+			$data["page_content"] = $this->mod_peringatandini->mobile_peringatan_dini_detail($this->uri->segment(3));
+			$this->load->view('mobile/peringatan_dini_detail',$data);
+		}
+	}
+
+	function mobile_info_bencana_detail(){
+		if($this->uri->segment(3) != null){
+			$data["page_content"] = $this->mod_infobencana->mobile_info_bencana_detail($this->uri->segment(3));
+			$this->load->view('mobile/info_bencana_detail',$data);
+		}
+	}
+
 }

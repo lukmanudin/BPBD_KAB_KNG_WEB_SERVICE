@@ -1,7 +1,22 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Mod_infobencana extends CI_Model{
-    
+
+	function mobile_info_bencana_detail($id){
+		$return = $this->db->query("select * from t_info_bencana where id='".$id."'");
+		return $return->result();
+	}
+
+	function info_bencana_published(){
+		$return = $this->db->query("select * from t_info_bencana where status='Publish' order by tanggal_publish desc limit 20");
+		return $return->result();
+	}
+	
+	function last_info_bencana(){
+		$return = $this->db->query("select * from t_info_bencana order by id desc limit 5");
+		return $return->result();
+	}
+	
 	function info_bencana(){
 		$return = $this->db->query("select * from t_info_bencana order by id desc");
 		return $return->result();

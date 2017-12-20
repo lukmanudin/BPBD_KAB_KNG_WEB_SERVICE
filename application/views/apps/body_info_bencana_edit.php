@@ -11,13 +11,19 @@
           <form id="my_form" role="form" method="post" enctype="multipart/form-data">
             <div class="row">
               <input type="hidden" id="id" name="id">
-              <div class="col-lg-6">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label>Judul info bencana</label>
                   <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini">
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Tanggal Kejadian</label>
+                  <input type="date" class="form-control" id="tanggal_kejadian" name="tanggal_kejadian" placeholder="Tanggal Kejadian">
+                </div>
+              </div>
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label>Kategori bencana</label>
                   <select class="form-control" id="kategori" name="kategori">
@@ -138,6 +144,7 @@
                 $("#id").val(response.response[0].id);
                 $("#judul").val(response.response[0].judul);
                 // $("#kategori").val(response.response[0].kategori);
+                $("#tanggal_kejadian").val(response.response[0].tanggal_kejadian);
                 $("#kampung").val(response.response[0].kampung);
                 $("#kelurahan").val(response.response[0].kelurahan);
                 $("#kecamatan").val(response.response[0].kecamatan);

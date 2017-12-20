@@ -1,7 +1,22 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Mod_peringatandini extends CI_Model{
-    
+
+	function mobile_peringatan_dini_detail($id){
+		$return = $this->db->query("select * from t_peringatan_dini where id='".$id."'");
+		return $return->result();
+	}
+
+	function peringatan_dini_published(){
+		$return = $this->db->query("select * from t_peringatan_dini where status='Publish' order by tanggal_publish desc limit 20");
+		return $return->result();
+	}
+
+	function last_peringatan_dini(){
+		$return = $this->db->query("select * from t_peringatan_dini order by id desc limit 5");
+		return $return->result();
+	}
+
 	function peringatan_dini(){
 		$return = $this->db->query("select * from t_peringatan_dini order by id desc");
 		return $return->result();
