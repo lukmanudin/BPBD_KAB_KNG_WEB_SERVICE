@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Mod_laporanmasyarakat extends CI_Model{
+
+	function mobile_laporan_masyarakat_detail($id){
+		$return = $this->db->query("select * from t_laporan_masyarakat where id='".$id."'");
+		return $return->result();
+	}
 	
 	function last_laporan_masyarakat(){
 		$return = $this->db->query("select * from t_laporan_masyarakat order by id desc limit 5");

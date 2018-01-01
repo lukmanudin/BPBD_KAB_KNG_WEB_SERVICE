@@ -10,12 +10,16 @@ class Apps extends CI_Controller {
 		parent::__construct();
 		$this->load->model('mod_infobencana');
 		$this->load->model('mod_peringatandini');
+		$this->load->model('mod_laporanmasyarakat');
+		$this->load->model('mod_peta');
+		
 	}
 
 	public function index(){
 		$cfg["judul_halaman"] = "Dashboard";
 		$this->load->view('apps/header');
-		$this->load->view('apps/body_template');
+		$this->load->view('apps/nav');
+		$this->load->view('apps/body_dashboard');
 		$this->load->view('apps/footer');
 	}
 
@@ -36,7 +40,7 @@ class Apps extends CI_Controller {
 			$cfg["judul_halaman"] = "Dashboard";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
-			$this->load->view('apps/body_template');
+			$this->load->view('apps/body_dashboard');
 			$this->load->view('apps/footer');
 		}else{
 			header('location:'. site_url().'/apps/login/');
@@ -129,6 +133,35 @@ class Apps extends CI_Controller {
 		}
 	}
 
+	public function peta(){
+		if($this->session->userdata("session_appssystem_code")){
+			$cfg["judul_halaman"] = "Peta";
+			$this->load->view('apps/header');
+			$this->load->view('apps/nav');
+			if($this->uri->segment(3) != null){
+				$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/";
+				$cfg["btn_icon"] = "glyphicon glyphicon-arrow-left";
+				$cfg["btn_text"] = "Kembali";
+				$cfg['ref_peta'] = $this->mod_peta->ref_peta();
+				if($this->uri->segment(3) == $this->URL_INPUT_FORM){
+					$this->load->view('apps/body_peta_input',$cfg);
+				}else
+				if($this->uri->segment(3) == $this->URL_EDIT_FORM){
+					$this->load->view('apps/body_peta_edit',$cfg);
+				}
+			}else{
+				$cfg["judul_section_tabel"] = "Tabel Daftar Peta";
+				$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/".$this->URL_INPUT_FORM."/";
+				$cfg["btn_icon"] = "glyphicon glyphicon-plus-sign";
+				$cfg["btn_text"] = "Upload Peta";
+				$this->load->view('apps/body_peta',$cfg);
+			}
+			$this->load->view('apps/footer');
+		}else{
+			header('location:'. site_url().'/apps/login/');
+		}
+	}
+
 	public function user(){
 		if($this->session->userdata("session_appssystem_code")){
 		}else{
@@ -136,8 +169,29 @@ class Apps extends CI_Controller {
 		}
 	}
 
-	public function chat_group(){
+	public function chat(){
 		if($this->session->userdata("session_appssystem_code")){
+			$cfg["judul_halaman"] = "Forum Diskusi";
+			$this->load->view('apps/header');
+			$this->load->view('apps/nav');
+			if($this->uri->segment(3) != null){
+				$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/";
+				$cfg["btn_icon"] = "glyphicon glyphicon-chat";
+				$cfg["btn_text"] = "Kembali";
+				if($this->uri->segment(3) == $this->URL_INPUT_FORM){
+					$this->load->view('apps/body_chat_input',$cfg);
+				}else
+				if($this->uri->segment(3) == $this->URL_EDIT_FORM){
+					$this->load->view('apps/body_chat_edit',$cfg);
+				}
+			}else{
+				$cfg["judul_section_tabel"] = "Tabel Daftar Diskusi";
+				$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/".$this->URL_INPUT_FORM."/";
+				$cfg["btn_icon"] = "glyphicon glyphicon-plus-sign";
+				$cfg["btn_text"] = "Tambah Topik";
+				$this->load->view('apps/body_chat',$cfg);
+			}
+			$this->load->view('apps/footer');
 		}else{
 			header('location:'. site_url().'/apps/login/');
 		}
@@ -169,7 +223,6 @@ class Apps extends CI_Controller {
 	}
 	//
 
-
 	function mobile_peringatan_dini_detail(){
 		if($this->uri->segment(3) != null){
 			$data["page_content"] = $this->mod_peringatandini->mobile_peringatan_dini_detail($this->uri->segment(3));
@@ -182,6 +235,25 @@ class Apps extends CI_Controller {
 			$data["page_content"] = $this->mod_infobencana->mobile_info_bencana_detail($this->uri->segment(3));
 			$this->load->view('mobile/info_bencana_detail',$data);
 		}
+	}
+
+	function mobile_laporan_masyarakat_detail(){
+		if($this->uri->segment(3) != null){
+			$data["page_content"] = $this->mod_laporanmasyarakat->mobile_laporan_masyarakat_detail($this->uri->segment(3));
+			$this->load->view('mobile/laporan_masyarakat_detail',$data);
+		}
+	}
+
+	function mobile_chat_input(){
+		$this->load->view('mobile/chat_input');	
+	}
+
+	function mobile_chat_list(){
+		$this->load->view('mobile/chat_list');	
+	}
+
+	function mobile_chat_detail(){
+		$this->load->view('mobile/chat_detail');	
 	}
 
 }
