@@ -26,9 +26,27 @@ class Mod_chat extends CI_Model {
         $return = $this->db->query($query);
 		return $return->result();
     }
+
+    function chat_komentar($id){
+        $query = "select t_forum_komentar.id, 
+        t_user.nama as pengirim, 
+        t_forum_komentar.isi, 
+        t_forum_komentar.tanggal_buat 
+        from t_forum_komentar inner join t_user  
+        on t_user.id = t_forum_komentar.pengirim 
+        where  
+        t_forum_komentar.forum = '".$id."'";
+        $return = $this->db->query($query);
+		return $return->result();
+    }
     
     function chat_input($data){
 		$this->db->insert('t_forum',$data);
+        return $this->db->affected_rows();
+    } 
+
+    function chat_input_komentar($data){
+		$this->db->insert('t_forum_komentar',$data);
         return $this->db->affected_rows();
     } 
     

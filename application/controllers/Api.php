@@ -821,8 +821,11 @@ class Api extends CI_Controller {
 	}
 
 	function chat_detail(){
-		$response = $this->mod_chat->chat_detail($this->uri->segment(4));
-		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+		$array_response = array(
+			"response_detail" => $this->mod_chat->chat_detail($this->uri->segment(4)),
+			"response_komentar" => $this->mod_chat->chat_komentar($this->uri->segment(4))	
+		); 
+		echo json_encode(array("response" => $array_response),JSON_PRETTY_PRINT);
 	}
 
 	function chat_input(){
@@ -884,6 +887,40 @@ class Api extends CI_Controller {
 		}
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
+
+	function chat_input_komentar(){
+		if($this->input->post()!=null){
+			$data_diskusi = array(
+				"pengirim" => $this->uri->segment(3),
+				"forum" => $this->uri->segment(4),
+				"isi" => $this->input->post("isi"),
+				"tanggal_buat" => date("Y-m-d H:i:s")
+			);
+			$result= $this->mod_chat->chat_input_komentar($data_diskusi);
+			if($result == 1){
+				$response = array(
+					"code" => "SUCCESS",
+					"message" => "Simpan data berhasil",
+					"severity" => "success"
+				);
+			}else{
+				$response = array(
+					"code" => "ERROR",
+					"message" => "Simpan data gagal",
+					"severity" => "warning"
+				);
+			}
+		}else{
+			$response = array(
+				"code" => "ERROR",
+				"message" => "Tidak ada data dikirim ke server",
+				"severity" => "danger"
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+
 
 	//---- LANDING PAGE WEB
 	function landing_page_web(){

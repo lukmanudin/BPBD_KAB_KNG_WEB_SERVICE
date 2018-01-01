@@ -20,12 +20,12 @@
     <body>
         <section class="tabs-content" id="blog" style="background-color:white">
             <div class="container">
-                <div class="row" style="margin-top:20px">
+                <div class="row">
                     <div class="wrapper">
-                        <div class="col-lg-12" style="padding-right:25px;">
-                            <a href="<?php echo site_url(); ?>/apps/mobile_chat_input/<?php echo $this->uri->segment(3) ?>/">
-                                <input type="button" class="btn btn-primary btn-xs pull-right" value="Topik Baru" />
-                            </a>
+                        <div class="col-md-12" style="margin-top:20px">
+                            <div id="first-tab-group" class="tabgroup">
+                                <div id="tab1"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -33,10 +33,30 @@
                     <div class="wrapper">
                         <div class="col-md-12" style="margin-top:20px">
                             <div id="first-tab-group" class="tabgroup">
-                                <div id="tab1">
+                                <div id="tab2">
+                                    <div class="text-content" style="padding-bottom:60px">
+                                        <font style="color:#888;font-size:12pt">
+                                        <p>
+                                        <form id="my_form" role="form" method="post" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                            <label>Tanggapan Anda</label>
+                                            <textarea class="form-control" id="isi" name="isi" placeholder="Isi diskusi"></textarea>
+                                            </div>
+                                            <span class="pull-right">
+                                            <button type="submit" id="btn_simpan" value="simpan" class="btn btn-success">Simpan </button>
+                                            </span>
+                                        </form>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12" id="comment_box">
                     </div>
                 </div>
             </div>
@@ -46,29 +66,86 @@
         <script src="<?php echo base_url();?>assets/landing_page/js/plugins.js"></script>
         <script src="<?php echo base_url();?>assets/landing_page/js/main.js"></script>
         <script>
+        $(function () {
+            CKEDITOR.replace('isi');
+            $(".textarea").wysihtml5();
+        });
+        </script>
+        <script>
+        $("form#my_form").submit(function(e) {
+            var konfirmasi = confirm("Apakah Anda yakin akan mengirim tanggapan pada diskusi ini?");
+            if(konfirmasi){
+            for ( instance in CKEDITOR.instances ) {
+                CKEDITOR.instances[instance].updateElement();
+            }
+            e.preventDefault();    
+            var formData = new FormData(this);
+            $.ajax({
+                url: '<?php echo site_url(); ?>/api/chat_input_komentar/<?php echo $this->uri->segment(3) ."/". $this->uri->segment(4) . "/"; ?>' , //id_user/id_forum
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    console.log(response);
+                    if(response.response.code === "SUCCESS"){
+                        alert(response.response.message);
+                        location.reload(); 
+                    }else
+                    if(response.code === "ERROR"){
+                        alert(response.response.message);
+                    }
+                },
+                error: function(response){
+                    alert("Simpan data diskusi gagal.");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            }
+        });
+        </script>
+        <script>
         var str = '';
+        var cmt = ''
         $(document).ready(function(){
             $.ajax({
             url: "<?php echo site_url(); ?>/api/chat_detail/<?php echo $this->uri->segment(3)."/".$this->uri->segment(4); ?>/",
             type: 'GET',
             success: function(response) {
-                var panjang_data = response.response.length;
-                console.log(response.response[0].judul);
-                if(panjang_data > 0){
+                var panjang_data_response = response.response.response_detail.length;
+                var panjang_data_komentar = response.response.response_komentar.length;
+                console.log(response.response.response_detail[0].judul);
+                if(panjang_data_response > 0){
                     str +='<div class="text-content" style="margin-bottom:20px;">';
-                    str +='<font style="color:#888;font-size:12pt"><b>' +  response.response[0].judul + '</b></font>';
+                    str +='<font style="color:#888;font-size:12pt"><b>' +  response.response.response_detail[0].judul + '</b></font>';
                     str +='<ul class="info-post">';
-                    str +='<li><i class="fa fa-user"></i><font style="color:#888;font-size:10pt">oleh ' +  response.response[0].pengirim + '</font></li>';
+                    str +='<li><i class="fa fa-user"></i><font style="color:#888;font-size:10pt">oleh ' +  response.response.response_detail[0].pengirim + '</font></li>';
                     str +='</ul>';
                     str +='<ul class="info-post">';
-                    str +='<li><i class="fa fa-calendar"></i><font style="color:#888;font-size:10pt">' +  response.response[0].tanggal_buat + '</font></li>';
+                    str +='<li><i class="fa fa-calendar"></i><font style="color:#888;font-size:10pt">' +  response.response.response_detail[0].tanggal_buat + '</font></li>';
                     str +='</ul>';
                     str +='<p>'
-                    str += response.response[0].isi;
+                    str += response.response.response_detail[0].isi;
                     str +='<p>';
-                    str +='</div>'
-                    $("#tab1").html(str);    
+                    str +='</div>'   
                 }
+                if(panjang_data_komentar > 0){
+                    for(var x = 0;x<panjang_data_komentar;x++){
+                        cmt +='<div class="well" style="margin-left:10px;margin-right:10px;">';
+                        cmt +='<div class="media">';
+                        cmt +='<div class="media-body">';
+                        cmt +='<h4 class="media-heading" style="color:#888;font-size:10pt">Tanggapan dari ' + response.response.response_komentar[x].pengirim  + '</h4>';
+                        cmt +='<p style="color:#888;font-size:10pt">';
+                        cmt += response.response.response_komentar[x].isi ;
+                        cmt +='</p>';
+                        cmt +='</div>';
+                        cmt +='</div>';
+                        cmt +='</div>';
+                    }
+                    
+                }
+                $("#tab1").html(str); 
+                $("#comment_box").html(cmt); 
             },
             error: function(response){
                 alert("Terjadi ganguan saat load data forum diskusi");
