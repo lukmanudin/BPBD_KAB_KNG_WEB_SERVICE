@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h3 class="page-header">
-            <?php echo $judul_halaman; ?>
+            <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
             <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
               <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
             </a>
@@ -12,7 +12,8 @@
             <input type="hidden" id="id" name="id">
             <div class="form-group">
               <label>Judul peringatan dini</label>
-              <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini">
+              <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini" required oninvalid="this.setCustomValidity('Kolom Judul tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
             </div>
             <div class="form-group">
               <label>Isi</label>

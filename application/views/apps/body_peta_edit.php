@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h3 class="page-header">
-            <?php echo $judul_halaman; ?>
+          <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
             <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
               <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
             </a>
@@ -14,7 +14,8 @@
               <div class="col-lg-6">
                 <div class="form-group">
                   <label>Judul info bencana</label>
-                  <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini">
+                  <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini"  required oninvalid="this.setCustomValidity('Kolom Judul tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
               <div class="col-lg-6">
@@ -34,11 +35,11 @@
               <label>Deskripsi</label>
               <textarea class="form-control" id="deskripsi" name="deskripsi" placeholder="Isi peringatan dini"></textarea>
             </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div id="map" style="min-height:400px;"></div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div id="map" style="min-height:400px;"></div>
+                </div>
               </div>
-            </div>
             <div class="form-group">
               <label>Lampiran</label>
               <input type="file" class="form-control" id="lampiran" name="lampiran" placeholder="Lampiran">

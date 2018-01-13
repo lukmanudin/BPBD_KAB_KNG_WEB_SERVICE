@@ -62,8 +62,10 @@ class Api extends CI_Controller {
             if($resultcek[0]->status == 1){
                 $code = "MATCH";
                 $message = "Username dan password sesuai";
-                $severity = "success";
-                $this->buat_session($resultcek);
+				$severity = "success";
+				if($resultcek[0]->tipe == 1){
+					$this->buat_session($resultcek);
+				}
             }
         }else{
             $code = "NOT MATCH";
@@ -549,6 +551,15 @@ class Api extends CI_Controller {
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
 
+	function laporan_masyarakat_edit(){
+		if($this->uri->segment(3) != null){
+			$response = $this->mod_laporanmasyarakat->laporan_masyarakat_edit($this->uri->segment(3));
+		}else{
+			$response = array();
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
 	function laporan_masyarakat_input(){
 		if($this->input->post()!=null){
 			if (empty($_FILES['lampiran']['name'])==true) {
@@ -596,6 +607,35 @@ class Api extends CI_Controller {
 				$response = array(
 					"code" => "ERROR",
 					"message" => "Simpan data gagal",
+					"severity" => "warning"
+				);
+			}
+		}else{
+			$response = array(
+				"code" => "ERROR",
+				"message" => "Tidak ada data dikirim ke server",
+				"severity" => "danger"
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function laporan_masyarakat_update(){
+		if($this->input->post() != null){
+			$data_update = array(
+				"status" => $this->input->post('status')
+			);
+			$result = $this->mod_laporanmasyarakat->laporan_masyarakat_update($this->input->post('id'),$data_update);
+			if($result == 1){
+				$response = array(
+					"code" => "SUCCESS",
+					"message" => "Update status laporan masyarakat berhasil",
+					"severity" => "success"
+				);
+			}else{
+				$response = array(
+					"code" => "ERROR",
+					"message" => "Update status laporan masyarakat gagal",
 					"severity" => "warning"
 				);
 			}
@@ -658,7 +698,7 @@ class Api extends CI_Controller {
 				$nama_lampiran = "";
 			}else{
 				$config['upload_path'] = './uploads/';
-				$config['allowed_types'] = 'kml';
+				$config['allowed_types'] = 'kml|jpg|jpeg|png|bmp';
 				$config['max_size']	= '10240';
 				$config['overwrite'] = 'true';
 				$config['encrypt_name'] = 'true';  
@@ -722,7 +762,7 @@ class Api extends CI_Controller {
 				$nama_lampiran = "";
 			}else{
 				$config['upload_path'] = './uploads/';
-				$config['allowed_types'] = 'kml';
+				$config['allowed_types'] = 'kml|jpg|jpeg|png|bmp';
 				$config['max_size']	= '10240';
 				$config['overwrite'] = 'true';
 				$config['encrypt_name'] = 'true';  
@@ -814,6 +854,17 @@ class Api extends CI_Controller {
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
 
+	function mobile_peta_list(){
+		$response = $this->mod_peta->mobile_peta_list($this->uri->segment(3));
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function mobile_peta_detail(){
+		$response = $this->mod_peta->mobile_peta_detail($this->uri->segment(3));
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+
 	//------- CHAT / DISKUSI
 	function chat(){
 		$response = $this->mod_chat->chat();
@@ -847,6 +898,45 @@ class Api extends CI_Controller {
 				$response = array(
 					"code" => "ERROR",
 					"message" => "Simpan data gagal",
+					"severity" => "warning"
+				);
+			}
+		}else{
+			$response = array(
+				"code" => "ERROR",
+				"message" => "Tidak ada data dikirim ke server",
+				"severity" => "danger"
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function chat_edit(){
+		if($this->uri->segment(3) != null){
+			$response = $this->mod_chat->chat_edit($this->uri->segment(3));
+		}else{
+			$response = array();
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function chat_update(){
+		if($this->input->post() != null){
+			$data_update = array(
+				"judul" => $this->input->post('judul'),
+				"isi" => $this->input->post('isi')
+			);
+			$result = $this->mod_chat->chat_update($this->input->post('id'),$data_update);
+			if($result == 1){
+				$response = array(
+					"code" => "SUCCESS",
+					"message" => "Update topik diskusi berhasil",
+					"severity" => "success"
+				);
+			}else{
+				$response = array(
+					"code" => "ERROR",
+					"message" => "Update topik diskusi gagal",
 					"severity" => "warning"
 				);
 			}
@@ -920,7 +1010,39 @@ class Api extends CI_Controller {
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
 
+	
 
+	//---- NOTIFIKASI
+
+	function notifikasi(){
+		$data = array();
+		if($this->uri->segment(3) != null){
+			$data = array(
+				"peringatan_dini" => $this->mod_peringatandini->notifikasi(),
+				"info_bencana" => $this->mod_infobencana->notifikasi(),
+				"laporan_masyarakat" => $this->mod_laporanmasyarakat->notifikasi($this->uri->segment(3)),
+				// "diskusi" => $this->mod_chat->notifikasi($this->uri->segment(3))
+			);
+			$response = array(
+				"code" => "SUCCESS",
+				"message" => "Data untuk user terdaftar",
+				"severity" => "success",
+				"data" => $data
+			);
+		}else{
+			$data = array(
+				"peringatan_dini" => $this->mod_peringatandini->notifikasi(),
+				"info_bencana" => $this->mod_infobencana->notifikasi(),
+			);
+			$response = array(
+				"code" => "SUCCESS",
+				"message" => "Data untuk user umum",
+				"severity" => "success",
+				"data" => $data
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
 
 	//---- LANDING PAGE WEB
 	function landing_page_web(){

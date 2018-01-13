@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h3 class="page-header">
-            <?php echo $judul_halaman; ?>
+            <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
             <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
               <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
             </a>
@@ -11,11 +11,13 @@
           <form id="my_form" role="form" method="post" enctype="multipart/form-data">
             <div class="form-group">
               <label>Judul peringatan dini</label>
-              <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini">
+              <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini" required oninvalid="this.setCustomValidity('Kolom Judul tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
             </div>
             <div class="form-group">
               <label>Isi</label>
-              <textarea class="form-control" id="isi" name="isi" placeholder="Isi peringatan dini"></textarea>
+              <textarea class="form-control" id="isi" name="isi" placeholder="Isi peringatan dini" required oninvalid="this.setCustomValidity('Kolom Isi tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" ></textarea>
             </div>
             <div class="form-group">
               <label>Lampiran</label>
@@ -65,11 +67,10 @@
               data: formData,
               success: function(response) {
                   console.log(response);
-                  if(response.response.code === "SUCCESS"){
-                    alert(response.response.message);
+                  if(response.response.code === "MATCH"){
+                    window.location = 'apps/';
                     location.reload(); 
-                  }else
-                  if(response.code === "ERROR"){
+                  }else{
                     alert(response.response.message);
                   }
               },

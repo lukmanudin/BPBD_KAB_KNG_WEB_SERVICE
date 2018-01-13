@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h3 class="page-header">
-          <?php echo $judul_halaman; ?>
+        <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
           <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
             <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
           </a>
@@ -14,19 +14,20 @@
                 <tr>
                   <th>#</th>
                   <th>Judul laporan Masyarakat</th>
+                  <th>Pengirim</th>
                   <th>Status</th>
-                  <th>Tanggal Dikeluarkan</th>
+                  <th>Tanggal Laporan</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
               <tbody id="tabel_data">
                 <tr>
-                  <td colspan="5">Tidak ada laporan masyarakat tersimpan di database!</td>
+                  <td colspan="6">Tidak ada laporan masyarakat tersimpan di database!</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="5"><b>Halaman : </b><select id="opt_halaman"></select></td>
+                  <td colspan="6"><b>Halaman : </b><select id="opt_halaman"></select></td>
                 </tr>
               </tfoot>
             </table>
@@ -101,15 +102,19 @@
                 tabel_data += '<tr>';
                 tabel_data += '<td>' + (x+1)  + '</td>' ;
                 tabel_data += '<td><i>' + r.response[x].judul + '</i></td>' ;
-                if( r.response[x].status === "Finish"){
-                  tabel_data += '<td><label class="label label-success">' + r.response[x].status + '</label></td>' ;
+                tabel_data += '<td>' + r.response[x].nama_pengirim + '</td>' ;
+                if( r.response[x].status_laporan === "Laporan Tidak Valid"){
+                  tabel_data += '<td><label class="label label-danger">' + r.response[x].status_laporan + '</label></td>' ;
+                }else
+                if( r.response[x].status_laporan === "Selesai"){
+                  tabel_data += '<td><label class="label label-success">' + r.response[x].status_laporan + '</label></td>' ;
                 }else{
-                  tabel_data += '<td><label class="label label-warning">' + r.response[x].status + '</label></td>' ;
+                  tabel_data += '<td><label class="label label-warning">' + r.response[x].status_laporan + '</label></td>' ;
                 }
                 tabel_data += '<td>' + r.response[x].tanggal_buat  + '</td>' ;
                 tabel_data += '<td>' ;
                 tabel_data += '<button class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
-                tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-pencil"></span></button> ' ;
+                tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-ok-sign"></span></button> ' ;
                 tabel_data += '<button class="btn btn-xs btn-danger" onClick="delete_data('+r.response[x].id+');"><span class="glyphicon glyphicon-remove"></span></button> ' ;
                 tabel_data += '</td>' ;
                 tabel_data += '</tr>';

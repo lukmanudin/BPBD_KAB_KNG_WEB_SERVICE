@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h3 class="page-header">
-            <?php echo $judul_halaman; ?>
+            <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
             <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
               <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
             </a>
@@ -13,13 +13,15 @@
               <div class="col-lg-4">
                 <div class="form-group">
                   <label>Judul info bencana</label>
-                  <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini">
+                  <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul peringatan dini"  required oninvalid="this.setCustomValidity('Kolom Judul tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
               <div class="col-lg-4">
                 <div class="form-group">
                   <label>Tanggal Kejadian</label>
-                  <input type="date" class="form-control" id="tanggal_kejadian" name="tanggal_kejadian" placeholder="Tanggal Kejadian">
+                  <input type="date" class="form-control" id="tanggal_kejadian" name="tanggal_kejadian" placeholder="Tanggal Kejadian"  required oninvalid="this.setCustomValidity('Kolom Tanggal tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
               <div class="col-lg-4">
@@ -39,25 +41,29 @@
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Lokasi (RT/RW/Dusun/Kampung)</label>
-                  <input type="text" class="form-control" id="kampung" name="kampung" placeholder="Lokasi Bencana">
+                  <input type="text" class="form-control" id="kampung" name="kampung" placeholder="Lokasi Bencana" required oninvalid="this.setCustomValidity('Kolom Lokasi tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Kelurahan</label>
-                  <input type="text" class="form-control" id="kelurahan" name="kelurahan" placeholder="Kelurahan">
+                  <input type="text" class="form-control" id="kelurahan" name="kelurahan" placeholder="Kelurahan" required oninvalid="this.setCustomValidity('Kolom Kelurahan tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Kecamatan</label>
-                  <input type="text" class="form-control" id="kecamatan" name="kecamatan" placeholder="Kecamatan">
+                  <input type="text" class="form-control" id="kecamatan" name="kecamatan" placeholder="Kecamatan" required oninvalid="this.setCustomValidity('Kolom Kecamatan tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Kabupaten</label>
-                  <input type="text" class="form-control" id="kabupaten" name="kabupaten" placeholder="Kabupaten">
+                  <input type="text" class="form-control" id="kabupaten" name="kabupaten" placeholder="Kabupaten" required oninvalid="this.setCustomValidity('Kolom Kabupaten tidak boleh dikosongkan!')"
+    oninput="setCustomValidity('')" >
                 </div>
               </div>
             </div>

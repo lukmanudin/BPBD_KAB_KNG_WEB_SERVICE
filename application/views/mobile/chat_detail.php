@@ -43,7 +43,8 @@
                                             <textarea class="form-control" id="isi" name="isi" placeholder="Isi diskusi"></textarea>
                                             </div>
                                             <span class="pull-right">
-                                            <button type="submit" id="btn_simpan" value="simpan" class="btn btn-success">Simpan </button>
+                                            <button type="submit" id="btn_simpan" value="SIMPAN" class="btn btn-success">SIMPAN </button> 
+                                            <button type="button" id="btn_simpan" value="KEMBALI" class="btn btn-primary" onClick="goBack();">KEMBALI </button>
                                             </span>
                                         </form>
                                         </p>
@@ -134,9 +135,10 @@
                         cmt +='<div class="well" style="margin-left:10px;margin-right:10px;">';
                         cmt +='<div class="media">';
                         cmt +='<div class="media-body">';
-                        cmt +='<h4 class="media-heading" style="color:#888;font-size:10pt">Tanggapan dari ' + response.response.response_komentar[x].pengirim  + '</h4>';
-                        cmt +='<p style="color:#888;font-size:10pt">';
-                        cmt += response.response.response_komentar[x].isi ;
+                        cmt +='<font style="color:#888;font-size:10pt">Tanggapan dari <i>' + response.response.response_komentar[x].pengirim  + '</i></font>';
+                        cmt +='<br><font style="color:#888;font-size:8pt">Pada tanggal ' + response.response.response_komentar[x].tanggal_buat+ '</i></font>';
+                        cmt +='<p>';
+                        cmt += '<font style="color:#888;font-size:10pt"><i>' + response.response.response_komentar[x].isi + '</i></font>';
                         cmt +='</p>';
                         cmt +='</div>';
                         cmt +='</div>';
@@ -155,6 +157,11 @@
             processData: false
             });
         });
+        </script>
+        <script>
+        function goBack() {
+            window.history.back();
+        }
         </script>
     </body>
 </html>

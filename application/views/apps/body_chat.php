@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h3 class="page-header">
-          <?php echo $judul_halaman; ?>
+          <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
           <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
             <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
           </a>
@@ -101,7 +101,9 @@
                 tabel_data += '<td><i>' + r.response[x].judul + '</i></td>' ;
                 tabel_data += '<td>' ;
                 tabel_data += '<button class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
-                tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-pencil"></span></button> ' ;
+                if(r.response[x].id_pengirim == '<?php echo $this->session->userdata("session_appssystem_id") ?>' ){
+                  tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-pencil"></span></button> ' ;
+                }
                 tabel_data += '<button class="btn btn-xs btn-danger" onClick="delete_data('+r.response[x].id+');"><span class="glyphicon glyphicon-remove"></span></button> ' ;
                 tabel_data += '</td>' ;
                 tabel_data += '</tr>';

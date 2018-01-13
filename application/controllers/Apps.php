@@ -16,11 +16,16 @@ class Apps extends CI_Controller {
 	}
 
 	public function index(){
-		$cfg["judul_halaman"] = "Dashboard";
-		$this->load->view('apps/header');
-		$this->load->view('apps/nav');
-		$this->load->view('apps/body_dashboard');
-		$this->load->view('apps/footer');
+		if($this->session->userdata("session_appssystem_code")){
+			$cfg["judul_halaman"] = "Dashboard";
+			$cfg["page_icon"] = "glyphicon glyphicon-th-large";
+			$this->load->view('apps/header');
+			$this->load->view('apps/nav');
+			$this->load->view('apps/body_dashboard',$cfg);
+			$this->load->view('apps/footer');
+		}else{
+			header('location:'. site_url().'/apps/login/');
+		}
 	}
 
 	public function login(){
@@ -38,9 +43,10 @@ class Apps extends CI_Controller {
 	public function dashboard(){
 		if($this->session->userdata("session_appssystem_code")){
 			$cfg["judul_halaman"] = "Dashboard";
+			$cfg["page_icon"] = "glyphicon glyphicon-th-large";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
-			$this->load->view('apps/body_dashboard');
+			$this->load->view('apps/body_dashboard',$cfg);
 			$this->load->view('apps/footer');
 		}else{
 			header('location:'. site_url().'/apps/login/');
@@ -50,6 +56,7 @@ class Apps extends CI_Controller {
 	public function peringatan_dini(){
 		if($this->session->userdata("session_appssystem_code")){
 			$cfg["judul_halaman"] = "Peringatan Dini";
+			$cfg["page_icon"] = "glyphicon glyphicon-exclamation-sign";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
 			if($this->uri->segment(3) != null){
@@ -78,6 +85,7 @@ class Apps extends CI_Controller {
 	public function info_bencana(){
 		if($this->session->userdata("session_appssystem_code")){
 			$cfg["judul_halaman"] = "Info Bencana";
+			$cfg["page_icon"] = "glyphicon glyphicon-fire";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
 			if($this->uri->segment(3) != null){
@@ -107,6 +115,7 @@ class Apps extends CI_Controller {
 	public function laporan_masyarakat(){
 		if($this->session->userdata("session_appssystem_code")){
 			$cfg["judul_halaman"] = "Laporan Masyarakat";
+			$cfg["page_icon"] = "glyphicon glyphicon-bullhorn";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
 			if($this->uri->segment(3) != null){
@@ -114,6 +123,9 @@ class Apps extends CI_Controller {
 				$cfg["btn_icon"] = "glyphicon glyphicon-arrow-left";
 				$cfg["btn_text"] = "Kembali";
 				$cfg['ref_bencana'] = $this->mod_infobencana->ref_bencana();
+				$cfg['ref_st'] = $this->mod_laporanmasyarakat->ref_st();
+				// echo json_encode($cfg['ref_st']);
+				// die();
 				if($this->uri->segment(3) == $this->URL_INPUT_FORM){
 					$this->load->view('apps/body_laporan_masyarakat_input',$cfg);
 				}else
@@ -136,6 +148,7 @@ class Apps extends CI_Controller {
 	public function peta(){
 		if($this->session->userdata("session_appssystem_code")){
 			$cfg["judul_halaman"] = "Peta";
+			$cfg["page_icon"] = "glyphicon glyphicon-map-marker";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
 			if($this->uri->segment(3) != null){
@@ -172,6 +185,7 @@ class Apps extends CI_Controller {
 	public function chat(){
 		if($this->session->userdata("session_appssystem_code")){
 			$cfg["judul_halaman"] = "Forum Diskusi";
+			$cfg["page_icon"] = "glyphicon glyphicon-comment";
 			$this->load->view('apps/header');
 			$this->load->view('apps/nav');
 			if($this->uri->segment(3) != null){
@@ -244,6 +258,19 @@ class Apps extends CI_Controller {
 		}
 	}
 
+	function mobile_peta_list(){
+		$this->load->view('mobile/peta_list');
+	}
+
+	function mobile_peta_detail(){
+		if($this->uri->segment(3) != null){
+			$data["page_content"] = $this->mod_peta->mobile_peta_detail($this->uri->segment(3));
+			// echo json_encode($data[""]);
+			$this->load->view('mobile/peta_detail',$data);
+		}
+	}
+
+	//-------------------
 	function mobile_chat_input(){
 		$this->load->view('mobile/chat_input');	
 	}

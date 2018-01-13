@@ -67,8 +67,11 @@
                         str +='<div class="row">';
                         str +='<div class="col-lg-12">';
                         str +='<a href="<?php echo site_url(); ?>/apps/mobile_chat_detail/<?php echo $this->uri->segment(3) ?>/'+  response.response[x].id +'/">';
-                        str +='<input type="button" class="btn btn-primary btn-xs pull-right" value="Detail" />';
+                        str +='<input type="button" class="btn btn-primary btn-xs pull-right" value=" Detail " />';
                         str +='</a>';
+                        if(response.response[x].id_pengirim == <?php echo $this->uri->segment(3); ?>){
+                            str +='<input type="button" class="btn btn-primary btn-xs pull-right" value=" Hapus " style="margin-right:5px;"/>';
+                        }
                         str +='</div>';
                         str +='</div>';
                         str +='</div>';

@@ -27,6 +27,8 @@
                                         <h4><?php echo $page_content[0]->judul; ?></h4>
                                         <ul class="info-post">
                                             <li><i class="fa fa-user"></i>Admin</li>
+                                        </ul>
+                                        <ul class="info-post">
                                             <li><i class="fa fa-calendar"></i><?php echo $page_content[0]->tanggal_publish; ?></li>
                                         </ul>
                                         <p><?php echo $page_content[0]->isi; ?></p>

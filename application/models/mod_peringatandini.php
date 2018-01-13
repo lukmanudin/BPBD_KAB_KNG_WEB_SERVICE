@@ -43,6 +43,11 @@ class Mod_peringatandini extends CI_Model{
         return $this->db->affected_rows();
 	} 
 
+	function notifikasi(){
+		$return = $this->db->query("select count(*) as jumlah from t_peringatan_dini");
+        return $return->result();
+	} 
+
 	
 
 

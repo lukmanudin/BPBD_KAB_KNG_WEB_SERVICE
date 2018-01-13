@@ -26,7 +26,7 @@
                                     <div class="text-content">
                                         <h4><?php echo $page_content[0]->judul; ?></h4>
                                         <ul class="info-post">
-                                            <li><i class="fa fa-user"></i><?php echo $page_content[0]->judul; ?></li>
+                                            <li><i class="fa fa-user"></i><?php echo $page_content[0]->nama_pengirim; ?></li>
                                             <li><i class="fa fa-calendar"></i><?php echo $page_content[0]->tanggal_buat; ?></li>
                                         </ul>
                                         <p>
@@ -47,7 +47,7 @@
 
                                         <p>
                                         <label>Status</label><br>
-                                        <?php echo $page_content[0]->status; ?>
+                                        <?php echo $page_content[0]->status_laporan; ?>
                                         </p>
                                     </div>
                                 </div>

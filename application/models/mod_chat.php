@@ -4,6 +4,7 @@ class Mod_chat extends CI_Model {
 
     function chat(){
         $query = "select t_forum.id, 
+        t_forum.pengirim as id_pengirim, 
         t_user.nama as pengirim, 
         t_forum.judul, t_forum.isi, 
         t_forum.tanggal_buat 
@@ -45,13 +46,34 @@ class Mod_chat extends CI_Model {
         return $this->db->affected_rows();
     } 
 
-    function chat_input_komentar($data){
-		$this->db->insert('t_forum_komentar',$data);
-        return $this->db->affected_rows();
-    } 
+    function chat_edit($id){
+		$return = $this->db->query("select * from t_forum where id='".$id."'");
+		return $return->result();
+    }
+
+    function chat_update($id,$data){
+		$this->db->where('id', $id);
+		$this->db->update('t_forum', $data); 
+		return $this->db->affected_rows();
+	}
     
     function chat_delete($id){
 		$this->db->query("delete from t_forum where id='".$id."'");
         return $this->db->affected_rows();
-	} 
+    } 
+
+    function chat_input_komentar($data){
+		$this->db->insert('t_forum_komentar',$data);
+        return $this->db->affected_rows();
+    } 
+
+    function notifikasi($pengirim){
+		$return = $this->db->query("select count(*) as jumlah from t_forum_komentar where pengirim ='".$pengirim."'");
+		return $return->result();
+    }
+    
+    
+    
+    
+    
 }

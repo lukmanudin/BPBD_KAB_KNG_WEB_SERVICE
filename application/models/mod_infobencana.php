@@ -43,6 +43,11 @@ class Mod_infobencana extends CI_Model{
         return $this->db->affected_rows();
 	} 
 
+	function notifikasi(){
+		$return = $this->db->query("select count(*) as jumlah from t_info_bencana");
+        return $return->result();
+	} 
+
 	//----ref bencana
 	function ref_bencana(){
 		$return = $this->db->query("select * from t_ref_bencana order by id asc");

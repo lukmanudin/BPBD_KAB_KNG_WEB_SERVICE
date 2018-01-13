@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h3 class="page-header">
-            <?php echo $judul_halaman; ?>
+            <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
             <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
               <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
             </a>
