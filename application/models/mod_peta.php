@@ -56,6 +56,21 @@ class Mod_peta extends CI_Model{
 		return $return->result();
 	}
 
+	function peta_total(){
+		$return = $this->db->query("select count(*) as jumlah from t_peta");
+        return $return->result();
+	}
+
+	function peta_publish(){
+		$return = $this->db->query("select count(*) as jumlah from t_peta where status='Publish'");
+        return $return->result();
+	}
+
+	function peta_draft(){
+		$return = $this->db->query("select count(*) as jumlah from t_peta where status='Draft'");
+        return $return->result();
+	}
+
 	
 
 

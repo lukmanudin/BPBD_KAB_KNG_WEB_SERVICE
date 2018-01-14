@@ -46,7 +46,24 @@ class Mod_peringatandini extends CI_Model{
 	function notifikasi(){
 		$return = $this->db->query("select count(*) as jumlah from t_peringatan_dini");
         return $return->result();
-	} 
+	}
+
+	function peringatan_dini_total(){
+		$return = $this->db->query("select count(*) as jumlah from t_peringatan_dini");
+        return $return->result();
+	}
+
+	function peringatan_dini_publish(){
+		$return = $this->db->query("select count(*) as jumlah from t_peringatan_dini where status='Publish'");
+        return $return->result();
+	}
+
+	function peringatan_dini_draft(){
+		$return = $this->db->query("select count(*) as jumlah from t_peringatan_dini where status='Draft'");
+        return $return->result();
+	}
+	
+	
 
 	
 

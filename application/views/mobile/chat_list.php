@@ -70,7 +70,7 @@
                         str +='<input type="button" class="btn btn-primary btn-xs pull-right" value=" Detail " />';
                         str +='</a>';
                         if(response.response[x].id_pengirim == <?php echo $this->uri->segment(3); ?>){
-                            str +='<input type="button" class="btn btn-primary btn-xs pull-right" value=" Hapus " style="margin-right:5px;"/>';
+                            str +='<input onClick="delete_data('+response.response[x].id+');" type="button" class="btn btn-primary btn-xs pull-right" value=" Hapus " style="margin-right:5px;"/>';
                         }
                         str +='</div>';
                         str +='</div>';
@@ -87,6 +87,34 @@
             processData: false
             });
         });
+
+        function delete_data(id){
+            var del = confirm("Apakah Anda yakin akan menghapus diskusi ?");
+            if(del){
+            $.ajax({
+                url: "<?php echo site_url(); ?>/api/chat_delete/" + id + "/",
+                type: 'GET',
+                dataType : 'json',
+                success: function(response) {
+                    console.log(response);
+                    if(response.response.code === "SUCCESS"){
+                        alert(response.response.message);
+                        location.reload(); 
+                    }else
+                    if(response.code === "ERROR"){
+                        alert(response.response.message);
+                    }
+                },
+                error: function(response){
+                    alert("Delete data diskusi gagal.");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+
+            }
+        }
         </script>
     </body>
 </html>

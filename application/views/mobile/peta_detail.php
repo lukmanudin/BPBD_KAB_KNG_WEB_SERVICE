@@ -56,7 +56,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12" style="margin-top:10px;margin-bottom:10px;">
-                        <input type="button" style="padding:2.5px" onClick="goBack();" class="btn btn-primary form-control" value="KEMBALI" />
+                        <input type="button" style="padding:2.5px" onClick="goBack();" class="btn btn-primary form-control" value="KEMBALI" id="bback"/>
                     </div>
                 </div>
             </div>
@@ -96,6 +96,9 @@
             echo '<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEV6VJJWMu_R52hjxFcfx9a--OVKA5Hno&callback=load_kml"></script>';
         }else{
             echo "<script>$('#map_box').hide();</script>";
+        }
+        if($this->uri->segment(4) == "web"){
+            echo "<script>$('#bback').hide();</script>";
         }
         ?>
         <script>

@@ -44,7 +44,13 @@
                                             </div>
                                             <span class="pull-right">
                                             <button type="submit" id="btn_simpan" value="SIMPAN" class="btn btn-success">SIMPAN </button> 
+                                            <?php
+                                            if($this->uri->segment(5) != "web"){
+                                            ?>
                                             <button type="button" id="btn_simpan" value="KEMBALI" class="btn btn-primary" onClick="goBack();">KEMBALI </button>
+                                            <?php
+                                            }
+                                            ?>
                                             </span>
                                         </form>
                                         </p>

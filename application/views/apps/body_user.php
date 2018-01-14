@@ -1,7 +1,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h3 class="page-header">
-        <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
+          <span class="<?php echo $page_icon; ?>"></span> <?php echo $judul_halaman; ?>
           <a href="<?php echo $url; ?>" class="btn btn-primary btn-sm pull-right">
             <span class="<?php echo $btn_icon; ?>"><span> <?php echo $btn_text; ?> </span></class>
           </a>
@@ -13,21 +13,20 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Judul laporan Masyarakat</th>
-                  <th>Pengirim</th>
-                  <th>Status</th>
-                  <th>Tanggal Laporan</th>
+                  <th>Username</th>
+                  <th>Nama User</th>
+                  <th>Status User</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
               <tbody id="tabel_data">
                 <tr>
-                  <td colspan="6">Tidak ada laporan masyarakat tersimpan di database!</td>
+                  <td colspan="5">Tidak ada user tersimpan di database!</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="6"><b>Halaman : </b><select id="opt_halaman"></select></td>
+                  <td colspan="5"><b>Halaman : </b><select id="opt_halaman"></select></td>
                 </tr>
               </tfoot>
             </table>
@@ -37,7 +36,7 @@
             var limit_per_halaman = 4;
             $(document).ready(function(){
               $.ajax({
-                url: "<?php echo site_url(); ?>/api/laporan_masyarakat/",
+                url: "<?php echo site_url(); ?>/api/user/",
                 type: 'GET',
                 success: function(response) {
                     if(response.response.length > 0){
@@ -59,7 +58,7 @@
                     }
                 },
                 error: function(response){
-                  alert("Terjadi ganguan saat load data info bencana");
+                  alert("Terjadi ganguan saat load data user");
                 },
                 cache: false,
                 contentType: false,
@@ -101,20 +100,20 @@
               for(var x=batas_bawah;x<batas_atas;x++){
                 tabel_data += '<tr>';
                 tabel_data += '<td>' + (x+1)  + '</td>' ;
-                tabel_data += '<td><i>' + r.response[x].judul + '</i></td>' ;
-                tabel_data += '<td>' + r.response[x].nama_pengirim + '</td>' ;
-                if( r.response[x].status_laporan === "Laporan Tidak Valid"){
-                  tabel_data += '<td><label class="label label-danger">' + r.response[x].status_laporan + '</label></td>' ;
+                tabel_data += '<td><i>' + r.response[x].username + '</i></td>' ;
+                tabel_data += '<td><i>' + r.response[x].nama + '</i></td>' ;
+                if( r.response[x].status === "0"){
+                  tabel_data += '<td><label class="label label-warning">Belum Aktif</label></td>' ;
                 }else
-                if( r.response[x].status_laporan === "Selesai"){
-                  tabel_data += '<td><label class="label label-success">' + r.response[x].status_laporan + '</label></td>' ;
-                }else{
-                  tabel_data += '<td><label class="label label-warning">' + r.response[x].status_laporan + '</label></td>' ;
+                if( r.response[x].status === "1"){
+                  tabel_data += '<td><label class="label label-success">Aktif</label></td>' ;
+                }else
+                if( r.response[x].status === "2"){
+                  tabel_data += '<td><label class="label label-danger">Terblokir</label></td>' ;
                 }
-                tabel_data += '<td>' + r.response[x].tanggal_buat  + '</td>' ;
                 tabel_data += '<td>' ;
                 // tabel_data += '<button class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
-                tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-ok-sign"></span></button> ' ;
+                tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-pencil"></span></button> ' ;
                 tabel_data += '<button class="btn btn-xs btn-danger" onClick="delete_data('+r.response[x].id+');"><span class="glyphicon glyphicon-remove"></span></button> ' ;
                 tabel_data += '</td>' ;
                 tabel_data += '</tr>';
@@ -123,14 +122,14 @@
             }
 
             function edit_data(id){
-              window.location = "<?php echo site_url(); ?>/apps/laporan_masyarakat/edit/" + id + "/";
+              window.location = "<?php echo site_url(); ?>/apps/user/edit/" + id + "/";
             }
 
             function delete_data(id){
-              var del = confirm("Apakah Anda yakin akan menghapus info bencana ?");
+              var del = confirm("Apakah Anda yakin akan menghapus user tersebut ?");
               if(del){
                 $.ajax({
-                    url: "<?php echo site_url(); ?>/api/laporan_masyarakat_delete/" + id + "/",
+                    url: "<?php echo site_url(); ?>/api/user_delete/" + id + "/",
                     type: 'GET',
                     dataType : 'json',
                     success: function(response) {
@@ -144,7 +143,7 @@
                         }
                     },
                     error: function(response){
-                      alert("Delete data info bencana gagal.");
+                      alert("Delete data user gagal.");
                     },
                     cache: false,
                     contentType: false,

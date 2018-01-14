@@ -100,7 +100,7 @@
                 tabel_data += '<td>' + (x+1)  + '</td>' ;
                 tabel_data += '<td><i>' + r.response[x].judul + '</i></td>' ;
                 tabel_data += '<td>' ;
-                tabel_data += '<button class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
+                tabel_data += '<button class="btn btn-xs btn-primary" onClick="detail('+r.response[x].id+');"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
                 if(r.response[x].id_pengirim == '<?php echo $this->session->userdata("session_appssystem_id") ?>' ){
                   tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-pencil"></span></button> ' ;
                 }
@@ -144,6 +144,11 @@
 
               }
             }  
+
+            function detail(id){
+              var user = '<?php echo $this->session->userdata("session_appssystem_id"); ?>';
+              window.open('<?php echo site_url("apps/mobile_chat_detail/'+ user +'/'+ id +'/web/") ?>','Detail Peringatan Dini','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=800,height=300');
+            }
             </script>
           </div>
         </div>

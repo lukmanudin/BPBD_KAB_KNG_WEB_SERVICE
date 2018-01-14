@@ -177,6 +177,28 @@ class Apps extends CI_Controller {
 
 	public function user(){
 		if($this->session->userdata("session_appssystem_code")){
+			$cfg["judul_halaman"] = "User";
+			$cfg["page_icon"] = "glyphicon glyphicon-user";
+			$this->load->view('apps/header');
+			$this->load->view('apps/nav');
+			if($this->uri->segment(3) != null){
+				$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/";
+				$cfg["btn_icon"] = "glyphicon glyphicon-user";
+				$cfg["btn_text"] = "Kembali";
+				if($this->uri->segment(3) == $this->URL_INPUT_FORM){
+					$this->load->view('apps/body_user_input',$cfg);
+				}else
+				if($this->uri->segment(3) == $this->URL_EDIT_FORM){
+					$this->load->view('apps/body_user_edit',$cfg);
+				}
+			}else{
+				$cfg["judul_section_tabel"] = "Tabel Daftar User";
+				$cfg["url"] = site_url()."/".$this->uri->segment(1)."/".$this->uri->segment(2)."/".$this->URL_INPUT_FORM."/";
+				$cfg["btn_icon"] = "glyphicon glyphicon-plus-sign";
+				$cfg["btn_text"] = "Tambah User";
+				$this->load->view('apps/body_user',$cfg);
+			}
+			$this->load->view('apps/footer');
 		}else{
 			header('location:'. site_url().'/apps/login/');
 		}

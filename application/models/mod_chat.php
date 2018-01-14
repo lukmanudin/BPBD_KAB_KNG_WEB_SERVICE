@@ -71,6 +71,11 @@ class Mod_chat extends CI_Model {
 		$return = $this->db->query("select count(*) as jumlah from t_forum_komentar where pengirim ='".$pengirim."'");
 		return $return->result();
     }
+
+    function chat_total(){
+		$return = $this->db->query("select count(*) as jumlah from t_forum");
+        return $return->result();
+	}
     
     
     

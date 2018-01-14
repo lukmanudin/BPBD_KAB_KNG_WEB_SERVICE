@@ -54,6 +54,21 @@ class Mod_infobencana extends CI_Model{
 		return $return->result();
 	}
 
+	function info_bencana_total(){
+		$return = $this->db->query("select count(*) as jumlah from t_info_bencana");
+        return $return->result();
+	}
+
+	function info_bencana_publish(){
+		$return = $this->db->query("select count(*) as jumlah from t_info_bencana where status='Publish'");
+        return $return->result();
+	}
+
+	function info_bencana_draft(){
+		$return = $this->db->query("select count(*) as jumlah from t_info_bencana where status='Draft'");
+        return $return->result();
+	}
+
 	
 
 

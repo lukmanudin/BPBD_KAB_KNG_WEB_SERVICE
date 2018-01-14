@@ -864,6 +864,97 @@ class Api extends CI_Controller {
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
 
+	//---------------- U S E R --------------------
+	function user(){
+		$response = $this->mod_user->user();
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function user_edit(){
+		if($this->uri->segment(3) != null){
+			$response = $this->mod_user->user_edit($this->uri->segment(3));
+		}else{
+			$response = array();
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
+
+	function user_update(){ //user
+        if($this->input->post() != null){
+			$username = $this->input->post('username');
+			$password = $this->input->post('password');
+            $nama = $this->input->post('nama');
+            $email = $this->input->post('email'); 	
+            $alamat = $this->input->post('alamat');
+            $status = $this->input->post('status');
+            $pwd = $this->mod_user->get_password_by_id($this->input->post('id'));
+            if($password == $pwd[0]->password || MD5($password) == $pwd[0]->password){
+                $data = array(
+                    "nama" => $nama,
+                    "email" => $email,
+                    "alamat" => $alamat,
+                    "status" => $status);
+            }else{
+                $password = MD5($password);
+                $data = array(
+                    "password" => $password,
+                    "nama" => $nama,
+                    "email" => $email,
+                    "alamat" => $alamat,
+                    "status" => $status);
+            }
+            $resultcek = $this->mod_user->user_update($this->input->post('id'),$data);
+            if($resultcek > 0){
+                $response = array(
+                    "code" => "SUCCESS",
+                    "message" => "Update berhasil",
+                    "severity" => "success",
+                    "data_user" => null);    
+            }else{
+                $response = array(
+                    "code" => "FAILED",
+                    "message" => "Update gagal. Silahkan coba lagi.",
+                    "severity" => "warning",
+                    "data_user" => null);  
+            }
+        }else{
+            $response = array(
+                "code" => "NO DATA POSTED",
+                "message" => "Tidak ada data dikirim ke server!",
+                "severity" => "danger",
+                "data_user" => null
+            );
+        }
+        echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+    }
+
+	function user_delete(){
+		if($this->uri->segment(3) != null){
+			$result = $this->mod_user->user_delete($this->uri->segment(3));
+			if($result > 0){
+				if($result == 1){
+					$response = array(
+						"code" => "SUCCESS",
+						"message" => "hapus data berhasil",
+						"severity" => "success"
+					);
+				}else{
+					$response = array(
+						"code" => "ERROR",
+						"message" => "hapus data gagal",
+						"severity" => "warning"
+					);
+				}
+			}
+		}else{
+			$response = array(
+				"code" => "ERROR",
+				"message" => "Tidak parameter delete data",
+				"severity" => "danger"
+			);
+		}
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
 
 	//------- CHAT / DISKUSI
 	function chat(){
@@ -1010,10 +1101,7 @@ class Api extends CI_Controller {
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
 
-	
-
 	//---- NOTIFIKASI
-
 	function notifikasi(){
 		$data = array();
 		if($this->uri->segment(3) != null){
@@ -1054,4 +1142,42 @@ class Api extends CI_Controller {
 		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
 	}
 
+	//--------DASHBOARD 
+	function dashboard(){
+		$response = array(
+			"peringatan_dini" => array(
+				"peringatan_dini_total" => $this->mod_peringatandini->peringatan_dini_total(),
+				"peringatan_dini_publish" => $this->mod_peringatandini->peringatan_dini_publish(),
+				"peringatan_dini_draft" => $this->mod_peringatandini->peringatan_dini_draft()
+			),
+			"info_bencana" => array(
+				"info_bencana_total" => $this->mod_infobencana->info_bencana_total(),
+				"info_bencana_publish" => $this->mod_infobencana->info_bencana_publish(),
+				"info_bencana_draft" => $this->mod_infobencana->info_bencana_draft()
+			),
+			"peta" => array(
+				"peta_total" => $this->mod_peta->peta_total(),
+				"peta_publish" => $this->mod_peta->peta_publish(),
+				"peta_draft" => $this->mod_peta->peta_draft()
+			),
+			"laporan_masyarakat" => array(
+				"laporan_masyarakat_total" => $this->mod_laporanmasyarakat->laporan_masyarakat_total(),
+				"laporan_masyarakat_waiting" => $this->mod_laporanmasyarakat->laporan_masyarakat_waiting(),
+				"laporan_masyarakat_assessment" => $this->mod_laporanmasyarakat->laporan_masyarakat_assessment(),
+				"laporan_masyarakat_process" => $this->mod_laporanmasyarakat->laporan_masyarakat_process(),
+				"laporan_masyarakat_selesai" => $this->mod_laporanmasyarakat->laporan_masyarakat_selesai(),
+				"laporan_masyarakat_victim" => $this->mod_laporanmasyarakat->laporan_masyarakat_victim()
+			),
+			"user" => array(
+				"user_total" => $this->mod_user->user_total(),
+				"user_belum_aktif" => $this->mod_user->user_belum_aktif(),
+				"user_aktif" => $this->mod_user->user_aktif(),
+				"user_terblokir" => $this->mod_user->user_terblokir()
+			),
+			"diskusi" => array(
+				"diskusi_total" => $this->mod_chat->chat_total()
+			)
+		);
+		echo json_encode(array("response" => $response),JSON_PRETTY_PRINT);
+	}
 }

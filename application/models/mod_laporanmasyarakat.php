@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Mod_laporanmasyarakat extends CI_Model{
 
 	function mobile_laporan_masyarakat_detail($id){
-		// $return = $this->db->query("select * from t_laporan_masyarakat where id='".$id."'");
 		$return = $this->db->query("select
 		t_laporan_masyarakat.id,
 		t_laporan_masyarakat.pengirim,
@@ -106,5 +105,35 @@ class Mod_laporanmasyarakat extends CI_Model{
 	function ref_st(){
 		$return = $this->db->query("select * from t_ref_status_laporan");
 		return $return->result();
+	}
+
+	function laporan_masyarakat_total(){
+		$return = $this->db->query("select count(*) as jumlah from t_laporan_masyarakat");
+        return $return->result();
+	}
+
+	function laporan_masyarakat_waiting(){
+		$return = $this->db->query("select count(*) as jumlah from t_laporan_masyarakat where status='1'");
+        return $return->result();
+	}
+
+	function laporan_masyarakat_assessment(){
+		$return = $this->db->query("select count(*) as jumlah from t_laporan_masyarakat where status='2'");
+        return $return->result();
+	}
+	
+	function laporan_masyarakat_process(){
+		$return = $this->db->query("select count(*) as jumlah from t_laporan_masyarakat where status='3'");
+        return $return->result();
+	}
+
+	function laporan_masyarakat_selesai(){
+		$return = $this->db->query("select count(*) as jumlah from t_laporan_masyarakat where status='4'");
+        return $return->result();
+	}
+	
+	function laporan_masyarakat_victim(){
+		$return = $this->db->query("select count(*) as jumlah from t_laporan_masyarakat where status='5'");
+        return $return->result();
 	}
 }

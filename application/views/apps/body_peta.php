@@ -108,7 +108,7 @@
                 }
                 tabel_data += '<td>' + r.response[x].tanggal_upload  + '</td>' ;
                 tabel_data += '<td>' ;
-                tabel_data += '<button class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
+                tabel_data += '<button class="btn btn-xs btn-primary" onClick="detail('+r.response[x].id+');"><span class="glyphicon glyphicon-eye-open"></span></button> ' ;
                 tabel_data += '<button class="btn btn-xs btn-success" onClick="edit_data('+r.response[x].id+');"><span class="glyphicon glyphicon-pencil"></span></button> ' ;
                 tabel_data += '<button class="btn btn-xs btn-danger" onClick="delete_data('+r.response[x].id+');"><span class="glyphicon glyphicon-remove"></span></button> ' ;
                 tabel_data += '</td>' ;
@@ -150,6 +150,10 @@
 
               }
             }  
+
+            function detail(id){
+              window.open('<?php echo site_url("apps/mobile_peta_detail/'+ id +'/web/") ?>','Detail Peringatan Dini','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=800,height=400');
+            }
             </script>
           </div>
         </div>
